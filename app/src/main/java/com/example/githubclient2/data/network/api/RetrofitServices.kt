@@ -7,5 +7,5 @@ import retrofit2.http.Path
 
 interface RetrofitServices {
     @GET("users?since={id}&per_page=50")
-    suspend fun getUserList(@Path ("id") id: Int): Call<MutableList<DataUserModel>>
+    suspend fun getUserList(@Path ("id") id: Int): MutableList<DataUserModel>
 }

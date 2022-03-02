@@ -1,9 +1,12 @@
 package com.example.githubclient2.data.network.api
 
-class ApiHelper (val services: RetrofitServices) {
+import com.example.githubclient2.data.network.GetUserListNetwork
+import com.example.githubclient2.data.network.model.DataUserModel
 
-    suspend fun getUsers(id: Int){
-        services.getUserList(id)
+class ApiHelper (val services: RetrofitServices) : GetUserListNetwork {
+
+    override suspend fun get(id: Int): MutableList<DataUserModel>{
+        return services.getUserList(id)
     }
 
 }
