@@ -6,6 +6,6 @@
     <dimen name="avatar_corner_radius">40dp</dimen>
     <dimen name="padding_into_rv_item">8dp</dimen>
     <dimen name="margin_top">4dp</dimen>
-    <dimen name="margin_left_text">8dp</dimen>
+    <dimen name="margin_left_text">16dp</dimen>
     <dimen name="margin_left_icon">16dp</dimen>
 </resources>

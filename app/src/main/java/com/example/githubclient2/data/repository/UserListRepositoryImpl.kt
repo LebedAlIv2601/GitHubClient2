@@ -1,5 +1,6 @@
 package com.example.githubclient2.data.repository
 
+import android.util.Log
 import com.example.githubclient2.data.network.GetUserListNetwork
 import com.example.githubclient2.data.network.model.DataUserModel
 import com.example.githubclient2.domain.model.DomainUserModel
@@ -9,6 +10,7 @@ class UserListRepositoryImpl(private val network: GetUserListNetwork) : UserList
 
 
     override suspend fun get(id: Int): MutableList<DomainUserModel> {
+        Log.e("Loading", "Trying to load data from userListRepository")
         return mapUser(network.get(id))
     }
 

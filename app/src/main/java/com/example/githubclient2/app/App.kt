@@ -1,6 +1,8 @@
 package com.example.githubclient2.app
 
 import android.app.Application
+import com.example.githubclient2.BuildConfig
+import com.example.githubclient2.di.appModule
 import com.example.githubclient2.di.dataModule
 import com.example.githubclient2.di.domainModule
 import org.koin.android.ext.koin.androidContext
@@ -13,9 +15,9 @@ class App : Application() {
         super.onCreate()
 
         startKoin {
-            androidLogger(Level.DEBUG)
+            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(this@App)
-            modules(listOf(domainModule, dataModule))
+            modules(listOf(appModule, domainModule, dataModule))
         }
     }
 }
