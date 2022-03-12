@@ -13,7 +13,7 @@ class GitHubPageSource(private val services: RetrofitServices) : PagingSource<In
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DomainUserModel> {
 
         return try {
-            val id: Int = params.key ?: 0
+            val id: Int = params.key ?: Environment.DEFAULT_ID_INDEX
             val response = services.getUserList(id, params.loadSize)
 
             val users = response.map { it.toDomainUserModel()}
@@ -31,10 +31,6 @@ class GitHubPageSource(private val services: RetrofitServices) : PagingSource<In
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, DomainUserModel>): Int = 0
-
-//    interface Factory {
-//        fun create(): GitHubPageSource
-//    }
+    override fun getRefreshKey(state: PagingState<Int, DomainUserModel>): Int = Environment.DEFAULT_ID_INDEX
 }
 

@@ -1,8 +1,6 @@
 package com.example.githubclient2.data.network.api
 
 import android.util.Log
-import com.example.githubclient2.BuildConfig
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

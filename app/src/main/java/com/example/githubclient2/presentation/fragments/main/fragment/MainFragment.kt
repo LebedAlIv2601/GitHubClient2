@@ -1,7 +1,6 @@
 package com.example.githubclient2.presentation.fragments.main.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,18 +17,15 @@ import com.example.githubclient2.databinding.FragmentMainBinding
 import com.example.githubclient2.presentation.fragments.main.recyclerview.LoaderStateAdapter
 import com.example.githubclient2.presentation.fragments.main.recyclerview.PagingUserAdapter
 import com.example.githubclient2.presentation.fragments.main.vm.MainViewModel
-import com.example.githubclient2.utils.Status
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainFragment : Fragment() {
 
-    private val vm: MainViewModel by viewModel<MainViewModel>()
+    private val vm: MainViewModel by viewModel()
 
-    //private lateinit var adapter: UserAdapter
     private lateinit var binding: FragmentMainBinding
-//    private lateinit var loaderStateAdapter: LoaderStateAdapter
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PagingUserAdapter()
@@ -42,45 +38,33 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_main, container, false)
 
-        setupUI()
-
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.retryFragmentButton.setOnClickListener {
-            pagingAdapter.retry()
-        }
-//        setupObservers()
+        setupRecyclerView()
+        setupListeners()
+        setupObservers()
     }
 
+    private fun setupObservers() {
+        vm.getUserList().observe(viewLifecycleOwner, Observer {
+            lifecycleScope.launch {
+                pagingAdapter.submitData(it)
+            }
+        })
+    }
 
-    private fun setupUI(){
-//        val pagingAdapter = PagingUserAdapter()
-        binding.apply {
-            usersRecyclerView.adapter = pagingAdapter
-                .withLoadStateHeaderAndFooter(
-                    header = LoaderStateAdapter{pagingAdapter.retry()},
-                    footer = LoaderStateAdapter{pagingAdapter.retry()})
-            usersRecyclerView.layoutManager = LinearLayoutManager(this@MainFragment.context)
-            usersRecyclerView.addItemDecoration(
-                DividerItemDecoration(
-                    usersRecyclerView.context,
-                    DividerItemDecoration.VERTICAL
-                )
-            )
+    private fun setupListeners() {
+        with(binding) {
+
+            retryFragmentButton.setOnClickListener {
+                pagingAdapter.retry()
+            }
 
             swipeRefresh.setOnRefreshListener { pagingAdapter.refresh() }
-
-            vm.getUserList().observe(viewLifecycleOwner, Observer{
-                lifecycleScope.launch{
-                    pagingAdapter.submitData(it)
-                }
-            })
 
             pagingAdapter.addLoadStateListener {
                 swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
@@ -89,7 +73,23 @@ class MainFragment : Fragment() {
                 retryFragmentButton.isVisible = it.refresh is LoadState.Error
                 retryFragmentTextView.isVisible = it.refresh is LoadState.Error
             }
+        }
+    }
 
+
+    private fun setupRecyclerView(){
+        binding.apply {
+            usersRecyclerView.adapter = pagingAdapter
+                .withLoadStateHeaderAndFooter(
+                    header = LoaderStateAdapter { pagingAdapter.retry() },
+                    footer = LoaderStateAdapter { pagingAdapter.retry() })
+            usersRecyclerView.layoutManager = LinearLayoutManager(this@MainFragment.context)
+            usersRecyclerView.addItemDecoration(
+                DividerItemDecoration(
+                    usersRecyclerView.context,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
         }
     }
 
