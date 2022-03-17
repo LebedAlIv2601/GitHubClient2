@@ -23,4 +23,13 @@
         <item name="android:layout_marginStart">@dimen/margin_left_text</item>
         <item name="android:layout_marginTop">@dimen/margin_top</item>
     </style>
+
+    <style name="detailsTextStyle">
+        <item name="android:gravity">left</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">@dimen/margin_left_text</item>
+    </style>
 </resources>

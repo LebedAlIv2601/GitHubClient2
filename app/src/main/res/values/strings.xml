@@ -5,4 +5,10 @@
     <string name="id_label_text">id:</string>
     <string name="button_retry_text">Retry</string>
     <string name="retry_text">Something went wrong! Please, try again.</string>
+
+    <string name="email_label_text">Email:</string>
+    <string name="organization_label_text">Organization:</string>
+    <string name="following_count_label_text">Following count:</string>
+    <string name="followers_count_label_text">Followers count:</string>
+    <string name="creation_date_label_text">Creation date:</string>
 </resources>

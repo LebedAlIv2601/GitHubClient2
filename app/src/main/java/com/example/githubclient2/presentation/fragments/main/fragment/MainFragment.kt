@@ -1,10 +1,12 @@
 package com.example.githubclient2.presentation.fragments.main.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubclient2.R
 import com.example.githubclient2.databinding.FragmentMainBinding
+import com.example.githubclient2.domain.model.DomainUserModel
+import com.example.githubclient2.presentation.fragments.details.fragment.DetailsFragment
 import com.example.githubclient2.presentation.fragments.main.recyclerview.LoaderStateAdapter
 import com.example.githubclient2.presentation.fragments.main.recyclerview.PagingUserAdapter
 import com.example.githubclient2.presentation.fragments.main.vm.MainViewModel
@@ -28,7 +32,22 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PagingUserAdapter()
+        val onUserClickListener: PagingUserAdapter.OnUserClickListener =
+            object : PagingUserAdapter.OnUserClickListener{
+                override fun onUserClick(user: DomainUserModel, position: Int) {
+                    val fragmentDetails = DetailsFragment()
+
+                    fragmentDetails.arguments =  bundleOf("bundleUserKey" to user.login)
+//                    parentFragmentManager.setFragmentResult("user",
+//                       )
+                    parentFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragmentDetails)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            }
+        PagingUserAdapter(onUserClickListener)
     }
 
     override fun onCreateView(
@@ -44,13 +63,15 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupObservers()
         setupRecyclerView()
         setupListeners()
-        setupObservers()
+
     }
 
     private fun setupObservers() {
-        vm.getUserList().observe(viewLifecycleOwner, Observer {
+        Log.e("UUUUUUUUU", vm.userListData.toString())
+        vm.userListData.observe(viewLifecycleOwner, Observer {
             lifecycleScope.launch {
                 pagingAdapter.submitData(it)
             }
@@ -79,6 +100,7 @@ class MainFragment : Fragment() {
 
     private fun setupRecyclerView(){
         binding.apply {
+
             usersRecyclerView.adapter = pagingAdapter
                 .withLoadStateHeaderAndFooter(
                     header = LoaderStateAdapter { pagingAdapter.retry() },
