@@ -6,6 +6,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.githubclient2.R
 import com.example.githubclient2.databinding.UserRecyclerViewItemBinding
 import com.example.githubclient2.domain.model.DomainUserModel
@@ -26,8 +28,15 @@ class PagingUserAdapter(private val clickListener: OnUserClickListener) :
                 if (item.avatar == null) {
                     avatarImageview.setImageResource(R.drawable.github_logo)
                 } else {
-                    Glide.with(binding.root.context).load(item.avatar)
-                        .placeholder(R.drawable.github_logo).into(avatarImageview)
+                    if(item.id <= 100) {
+                        Glide.with(binding.root.context).load(item.avatar)
+                            .placeholder(R.drawable.github_logo).into(avatarImageview)
+                    } else {
+                        Glide.with(binding.root.context).load(item.avatar)
+                            .apply(RequestOptions.skipMemoryCacheOf(true)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE))
+                            .placeholder(R.drawable.github_logo).into(avatarImageview)
+                    }
                 }
                 usernameTextview.text = item.login ?: "Unknown"
                 idTextview.text = item.id.toString()
