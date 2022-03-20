@@ -1,9 +1,11 @@
-package com.example.githubclient2.data.network.api
+package com.example.githubclient2.data.paging
 
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-
+import com.example.githubclient2.data.network.api.Environment
+import com.example.githubclient2.data.network.api.RetrofitServices
+import com.example.githubclient2.data.map.toDomainUserModel
 import com.example.githubclient2.domain.model.DomainUserModel
 import retrofit2.HttpException
 import java.lang.Exception
@@ -31,6 +33,7 @@ class GitHubPageSource(private val services: RetrofitServices) : PagingSource<In
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, DomainUserModel>): Int = Environment.DEFAULT_ID_INDEX
+    override fun getRefreshKey(state: PagingState<Int, DomainUserModel>): Int =
+        Environment.DEFAULT_ID_INDEX
 }
 

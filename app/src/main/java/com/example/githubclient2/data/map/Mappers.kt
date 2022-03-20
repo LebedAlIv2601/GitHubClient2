@@ -1,4 +1,4 @@
-package com.example.githubclient2.data.network.api
+package com.example.githubclient2.data.map
 
 import com.example.githubclient2.data.network.model.DataUserInfoModel
 import com.example.githubclient2.data.network.model.DataUserModel

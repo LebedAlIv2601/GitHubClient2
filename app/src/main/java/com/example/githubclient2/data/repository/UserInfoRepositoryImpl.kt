@@ -1,7 +1,7 @@
 package com.example.githubclient2.data.repository
 
 import com.example.githubclient2.data.network.api.ApiHelper
-import com.example.githubclient2.data.network.api.toDomainUserInfoModel
+import com.example.githubclient2.data.map.toDomainUserInfoModel
 import com.example.githubclient2.domain.model.DomainUserInfoModel
 import com.example.githubclient2.domain.repository.UserInfoRepository
 

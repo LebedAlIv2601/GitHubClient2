@@ -6,14 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
 import com.example.githubclient2.R
 import com.example.githubclient2.databinding.FragmentMainBinding
 import com.example.githubclient2.domain.model.DomainUserModel
@@ -38,11 +41,10 @@ class MainFragment : Fragment() {
                     val fragmentDetails = DetailsFragment()
 
                     fragmentDetails.arguments =  bundleOf("bundleUserKey" to user.login)
-//                    parentFragmentManager.setFragmentResult("user",
-//                       )
                     parentFragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragment_container, fragmentDetails)
+                        .add(R.id.fragment_container, fragmentDetails)
+                        .hide(this@MainFragment)
                         .addToBackStack(null)
                         .commit()
                 }
@@ -114,61 +116,4 @@ class MainFragment : Fragment() {
             )
         }
     }
-
-//    private fun setupObservers(){
-//        vm.getUserList().observe(viewLifecycleOwner, Observer {
-//            it?.let { resource ->
-//                when (resource.status){
-//                    Status.SUCCESS -> {
-//                        Log.e("Loading", "Status success")
-//                        with(binding) {
-//                            usersRecyclerView.visibility = View.VISIBLE
-//                            userFragmentProgressBar.visibility = View.GONE
-//                            retryFragmentButton.visibility = View.GONE
-//                            retryFragmentTextView.visibility = View.GONE
-//                        }
-////                        resource.data?.let{
-////                            lifecycleScope.launch{
-////                                it.value?.let { it1 -> pagingAdapter.submitData(it1) }
-////                            }
-////                        }
-//                        resource.data?.value?.let {
-//                            lifecycleScope.launch{
-//                                pagingAdapter.submitData(it)
-//                            }
-//                        }
-//                    }
-//                    Status.ERROR -> {
-//                        Log.e("Loading", "Status error")
-//                        with(binding) {
-//                            usersRecyclerView.visibility = View.VISIBLE
-//                            userFragmentProgressBar.visibility = View.GONE
-//                            retryFragmentButton.visibility = View.VISIBLE
-//                            retryFragmentTextView.text = it.message
-//                            retryFragmentTextView.visibility = View.VISIBLE
-//                        }
-////                        it.message?.let { it1 -> Log.e("Loading", it1) }
-////                        Toast.makeText(this.context, it.message, Toast.LENGTH_LONG).show()
-//                    }
-//                    Status.LOADING -> {
-//                        Log.e("Loading", "Status loading")
-//                        with(binding) {
-//                            usersRecyclerView.visibility = View.VISIBLE
-//                            userFragmentProgressBar.visibility = View.VISIBLE
-//                            retryFragmentButton.visibility = View.GONE
-//                            retryFragmentTextView.visibility = View.GONE
-//                        }
-//                    }
-//                }
-//            }
-//        })
-//    }
-
-//    private fun retrieveList(users: MutableList<DomainUserModel>) {
-//        adapter.apply {
-//            addUsers(users)
-//            notifyDataSetChanged()
-//        }
-//    }
-
 }

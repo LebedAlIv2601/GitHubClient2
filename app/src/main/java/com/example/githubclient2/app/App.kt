@@ -11,6 +11,7 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
 
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
 

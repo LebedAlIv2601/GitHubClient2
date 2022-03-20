@@ -6,6 +6,8 @@
     <string name="button_retry_text">Retry</string>
     <string name="retry_text">Something went wrong! Please, try again.</string>
 
+    <string name="main_fragment_title">Пользователи GitHub</string>
+
     <string name="email_label_text">Email:</string>
     <string name="organization_label_text">Organization:</string>
     <string name="following_count_label_text">Following count:</string>

@@ -8,9 +8,12 @@ import com.example.githubclient2.domain.repository.UserInfoRepository
 import com.example.githubclient2.domain.repository.UserListRepository
 import org.koin.dsl.module
 
+
 val dataModule = module {
 
-    factory<UserListRepository> { UserListRepositoryImpl(RetrofitClient.retrofitServices) }
+    factory<UserListRepository> {
+        UserListRepositoryImpl(RetrofitClient.retrofitServices)
+    }
 
     factory <UserInfoRepository> { UserInfoRepositoryImpl(apiHelper = get())  }
 

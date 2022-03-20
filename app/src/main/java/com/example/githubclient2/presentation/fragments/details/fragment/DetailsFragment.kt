@@ -11,7 +11,9 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.githubclient2.R
 import com.example.githubclient2.databinding.FragmentDetailsBinding
+import com.example.githubclient2.domain.model.DomainUserInfoModel
 import com.example.githubclient2.presentation.fragments.details.vm.DetailsViewModel
+import com.example.githubclient2.utils.FragmentTitleResource
 import com.example.githubclient2.utils.Status
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,6 +24,7 @@ class DetailsFragment : Fragment() {
     private val vm: DetailsViewModel by viewModel()
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var userLogin: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,14 +37,26 @@ class DetailsFragment : Fragment() {
         userLogin = if(arguments != null)
             requireArguments().getString("bundleUserKey", "") else ""
 
+        FragmentTitleResource.title = userLogin
 
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupListeners()
+
         setupObservers()
+    }
+
+    private fun setupListeners() {
+        with(binding){
+            retryFragmentDetailsButton.setOnClickListener {
+                setupObservers()
+            }
+        }
     }
 
     private fun setupObservers() {
@@ -53,19 +68,17 @@ class DetailsFragment : Fragment() {
                         with(binding) {
                             detailsProgressBar.visibility = View.GONE
                             infoLayout.visibility = View.VISIBLE
+                            retryFragmentDetailsButton.visibility = View.GONE
+                            retryFragmentDetailsTextView.visibility = View.GONE
                             if(resource.data != null) {
-                                if (resource.data.avatar != null){
-                                Glide.with(binding.root.context).load(resource.data.avatar)
+                                val user: DomainUserInfoModel = resource.data
+                                if (user.avatar != null){
+                                Glide.with(binding.root.context).load(user.avatar)
                                     .placeholder(R.drawable.github_logo).into(avatarDetailsImageView)
                                 } else {
                                     avatarDetailsImageView.setImageResource(R.drawable.github_logo)
                                 }
-                                nameDetails.text = resource.data.login ?: "Unknown"
-                                emailDetailsTextView.text = resource.data.email ?: "Unknown"
-                                organizationDetailsTextView.text = resource.data.company ?: "Unknown"
-                                followingCountDetailsTextView.text = resource.data.following.toString() ?: "Unknown"
-                                followersCountDetailsTextView.text = resource.data.followers.toString() ?: "Unknown"
-                                creationDateDetailsTextView.text = resource.data.created?.substring(0,10) ?: "Unknown"
+                                binding.user = user
                             }
                         }
                     }
@@ -76,6 +89,8 @@ class DetailsFragment : Fragment() {
                             nameDetails.text = userLogin
                             avatarDetailsImageView.setImageResource(R.drawable.github_logo)
                             infoLayout.visibility = View.GONE
+                            retryFragmentDetailsButton.visibility = View.VISIBLE
+                            retryFragmentDetailsTextView.visibility = View.VISIBLE
                         }
                     }
                     Status.LOADING -> {
@@ -84,6 +99,8 @@ class DetailsFragment : Fragment() {
                             detailsProgressBar.visibility = View.VISIBLE
                             nameDetails.text = userLogin
                             infoLayout.visibility = View.GONE
+                            retryFragmentDetailsButton.visibility = View.GONE
+                            retryFragmentDetailsTextView.visibility = View.GONE
                         }
                     }
                 }
