@@ -1,4 +1,4 @@
-package com.example.githubclient2.presentation.fragments.main.recyclerview
+package com.example.githubclient2.presentation.main.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,15 +12,11 @@ import com.example.githubclient2.R
 import com.example.githubclient2.databinding.UserRecyclerViewItemBinding
 import com.example.githubclient2.domain.model.DomainUserModel
 
-class PagingUserAdapter(private val clickListener: OnUserClickListener) :
+class PagingUserAdapter(private val userClick: (DomainUserModel) -> Unit) :
     PagingDataAdapter<DomainUserModel, PagingUserAdapter.PagingUserViewHolder>(UserComparator) {
 
-    interface OnUserClickListener{
-        fun onUserClick(user: DomainUserModel, position: Int)
-    }
-
     class PagingUserViewHolder(private val binding: UserRecyclerViewItemBinding,
-                               private val clickListenerIn: OnUserClickListener) :
+                               private val userClick: (DomainUserModel) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: DomainUserModel) {
@@ -40,19 +36,15 @@ class PagingUserAdapter(private val clickListener: OnUserClickListener) :
                 }
                 usernameTextview.text = item.login ?: "Unknown"
                 idTextview.text = item.id.toString()
-
-                itemView.setOnClickListener {
-                    clickListenerIn.onUserClick(item, absoluteAdapterPosition)
-                }
             }
         }
 
         companion object {
-            fun from(parent: ViewGroup, listener: OnUserClickListener): PagingUserViewHolder {
+            fun from(parent: ViewGroup, userClick: (DomainUserModel) -> Unit): PagingUserViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val view = layoutInflater
                     .inflate(R.layout.user_recycler_view_item, parent, false)
-                return PagingUserViewHolder(UserRecyclerViewItemBinding.bind(view), listener)
+                return PagingUserViewHolder(UserRecyclerViewItemBinding.bind(view), userClick)
             }
         }
     }
@@ -62,7 +54,13 @@ class PagingUserAdapter(private val clickListener: OnUserClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagingUserViewHolder {
-        return PagingUserViewHolder.from(parent, clickListener)
+        val viewHolder = PagingUserViewHolder.from(parent, userClick)
+        viewHolder.itemView.setOnClickListener {
+            if (viewHolder.absoluteAdapterPosition != RecyclerView.NO_POSITION){
+                getItem(viewHolder.absoluteAdapterPosition)?.let(userClick)
+            }
+        }
+        return viewHolder
     }
 
     object UserComparator : DiffUtil.ItemCallback<DomainUserModel>() {

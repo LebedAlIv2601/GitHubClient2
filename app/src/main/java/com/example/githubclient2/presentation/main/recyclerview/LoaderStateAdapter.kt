@@ -1,4 +1,4 @@
-package com.example.githubclient2.presentation.fragments.main.recyclerview
+package com.example.githubclient2.presentation.main.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,15 +15,6 @@ class LoaderStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<Loade
     class LoaderViewHolder(private val binding: LoadStateItemBinding, retry: () -> Unit) :
         RecyclerView.ViewHolder(binding.root){
 
-
-        companion object {
-            fun from(parent: ViewGroup, retry: () -> Unit): LoaderViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                return LoaderViewHolder(LoadStateItemBinding.bind(layoutInflater
-                    .inflate(R.layout.load_state_item, parent, false)), retry)
-            }
-        }
-
         init {
             binding.buttonRetry.setOnClickListener {
                 retry()
@@ -35,6 +26,14 @@ class LoaderStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<Loade
                 buttonRetry.isVisible = loadState is LoadState.Error
                 textViewRetry.isVisible = loadState is LoadState.Error
                 progressBarUserList.isVisible = loadState is LoadState.Loading
+            }
+        }
+
+        companion object {
+            fun from(parent: ViewGroup, retry: () -> Unit): LoaderViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                return LoaderViewHolder(LoadStateItemBinding.bind(layoutInflater
+                    .inflate(R.layout.load_state_item, parent, false)), retry)
             }
         }
     }

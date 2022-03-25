@@ -1,29 +1,25 @@
-package com.example.githubclient2.presentation.fragments.main.fragment
+package com.example.githubclient2.presentation.main.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewbinding.ViewBinding
 import com.example.githubclient2.R
 import com.example.githubclient2.databinding.FragmentMainBinding
 import com.example.githubclient2.domain.model.DomainUserModel
-import com.example.githubclient2.presentation.fragments.details.fragment.DetailsFragment
-import com.example.githubclient2.presentation.fragments.main.recyclerview.LoaderStateAdapter
-import com.example.githubclient2.presentation.fragments.main.recyclerview.PagingUserAdapter
-import com.example.githubclient2.presentation.fragments.main.vm.MainViewModel
+import com.example.githubclient2.presentation.details.fragment.DetailsFragment
+import com.example.githubclient2.presentation.main.recyclerview.LoaderStateAdapter
+import com.example.githubclient2.presentation.main.recyclerview.PagingUserAdapter
+import com.example.githubclient2.presentation.main.vm.MainViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -32,25 +28,9 @@ class MainFragment : Fragment() {
 
     private val vm: MainViewModel by viewModel()
 
-    private lateinit var binding: FragmentMainBinding
+    private var binding: FragmentMainBinding? = null
 
-    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val onUserClickListener: PagingUserAdapter.OnUserClickListener =
-            object : PagingUserAdapter.OnUserClickListener{
-                override fun onUserClick(user: DomainUserModel, position: Int) {
-                    val fragmentDetails = DetailsFragment()
-
-                    fragmentDetails.arguments =  bundleOf("bundleUserKey" to user.login)
-                    parentFragmentManager
-                        .beginTransaction()
-                        .add(R.id.fragment_container, fragmentDetails)
-                        .hide(this@MainFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-            }
-        PagingUserAdapter(onUserClickListener)
-    }
+    private var pagingAdapter: PagingUserAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +39,7 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_main, container, false)
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,24 +52,23 @@ class MainFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        Log.e("UUUUUUUUU", vm.userListData.toString())
         vm.userListData.observe(viewLifecycleOwner, Observer {
             lifecycleScope.launch {
-                pagingAdapter.submitData(it)
+                pagingAdapter?.submitData(it)
             }
         })
     }
 
     private fun setupListeners() {
-        with(binding) {
+        binding?.apply {
 
             retryFragmentButton.setOnClickListener {
-                pagingAdapter.retry()
+                pagingAdapter?.retry()
             }
 
-            swipeRefresh.setOnRefreshListener { pagingAdapter.refresh() }
+            swipeRefresh.setOnRefreshListener { pagingAdapter?.refresh() }
 
-            pagingAdapter.addLoadStateListener {
+            pagingAdapter?.addLoadStateListener {
                 swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
                 usersRecyclerView.isVisible = it.refresh !is LoadState.Loading
                 userFragmentProgressBar.isVisible = it.refresh is LoadState.Loading
@@ -99,14 +78,28 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun onUserClick(user: DomainUserModel) {
+        val fragmentDetails = DetailsFragment()
+
+        fragmentDetails.arguments =  bundleOf("bundleUserKey" to user.login)
+        parentFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_container, fragmentDetails)
+            .hide(this@MainFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
     private fun setupRecyclerView(){
-        binding.apply {
+        pagingAdapter = PagingUserAdapter{onUserClick(it)}
+
+        binding?.apply {
 
             usersRecyclerView.adapter = pagingAdapter
-                .withLoadStateHeaderAndFooter(
-                    header = LoaderStateAdapter { pagingAdapter.retry() },
-                    footer = LoaderStateAdapter { pagingAdapter.retry() })
+                ?.withLoadStateHeaderAndFooter(
+                    header = LoaderStateAdapter { pagingAdapter?.retry() },
+                    footer = LoaderStateAdapter { pagingAdapter?.retry() })
             usersRecyclerView.layoutManager = LinearLayoutManager(this@MainFragment.context)
             usersRecyclerView.addItemDecoration(
                 DividerItemDecoration(
@@ -114,6 +107,13 @@ class MainFragment : Fragment() {
                     DividerItemDecoration.VERTICAL
                 )
             )
+
         }
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        pagingAdapter = null
+        super.onDestroyView()
     }
 }

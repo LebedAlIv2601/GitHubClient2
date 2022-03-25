@@ -1,4 +1,4 @@
-package com.example.githubclient2.presentation.fragments.main.vm
+package com.example.githubclient2.presentation.main.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
