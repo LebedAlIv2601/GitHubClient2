@@ -40,17 +40,20 @@ android {
 
 dependencies {
 
+    //Fragment
+    implementation("androidx.fragment:fragment-ktx:1.4.0")
+
+
+    //Dagger
+
+    implementation 'com.google.dagger:dagger:2.36'
+    kapt 'com.google.dagger:dagger-compiler:2.36'
+
     //ViewModel and LifeCycle
     implementation 'androidx.lifecycle:lifecycle-common:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-
-
-    //Koin
-    def koin_version = "3.1.2"
-    implementation "io.insert-koin:koin-core:$koin_version"
-    implementation "io.insert-koin:koin-android:$koin_version"
 
     //Room
     def version_room = '2.4.2'

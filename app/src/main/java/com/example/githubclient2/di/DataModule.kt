@@ -1,22 +1,24 @@
 package com.example.githubclient2.di
 
+import com.example.githubclient2.data.network.api.Environment
+import com.example.githubclient2.data.network.api.RetrofitServices
+import dagger.Module
+import dagger.Provides
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-import com.example.githubclient2.data.network.api.*
-import com.example.githubclient2.data.repository.UserInfoRepositoryImpl
-import com.example.githubclient2.data.repository.UserListRepositoryImpl
-import com.example.githubclient2.domain.repository.UserInfoRepository
-import com.example.githubclient2.domain.repository.UserListRepository
-import org.koin.dsl.module
+
+@Module
+class DataModule{
 
 
-val dataModule = module {
+    @Provides
+    fun provideServices(): RetrofitServices {
+        val retrofit  = Retrofit.Builder()
+            .baseUrl(Environment.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    factory<UserListRepository> {
-        UserListRepositoryImpl(RetrofitClient.retrofitServices)
+        return retrofit.create(RetrofitServices::class.java)
     }
-
-    factory <UserInfoRepository> { UserInfoRepositoryImpl(apiHelper = get())  }
-
-    factory <ApiHelper> { ApiHelper(services = RetrofitClient.retrofitServices) }
-
 }

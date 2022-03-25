@@ -9,8 +9,9 @@ import com.example.githubclient2.data.map.toDomainUserModel
 import com.example.githubclient2.domain.model.DomainUserModel
 import retrofit2.HttpException
 import java.lang.Exception
+import javax.inject.Inject
 
-class GitHubPageSource(private val services: RetrofitServices) : PagingSource<Int, DomainUserModel>() {
+class GitHubPageSource @Inject constructor(private val services: RetrofitServices) : PagingSource<Int, DomainUserModel>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DomainUserModel> {
 
@@ -35,5 +36,6 @@ class GitHubPageSource(private val services: RetrofitServices) : PagingSource<In
 
     override fun getRefreshKey(state: PagingState<Int, DomainUserModel>): Int =
         Environment.DEFAULT_ID_INDEX
+
 }
 

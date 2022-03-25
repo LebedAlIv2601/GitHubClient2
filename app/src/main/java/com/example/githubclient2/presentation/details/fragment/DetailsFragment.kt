@@ -1,5 +1,6 @@
 package com.example.githubclient2.presentation.details.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,22 +8,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.githubclient2.R
+import com.example.githubclient2.app.appComponent
 import com.example.githubclient2.databinding.FragmentDetailsBinding
 import com.example.githubclient2.domain.model.DomainUserInfoModel
 import com.example.githubclient2.presentation.details.vm.DetailsViewModel
+import com.example.githubclient2.presentation.details.vm.DetailsViewModelFactory
 import com.example.githubclient2.utils.Resource
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 
 class DetailsFragment : Fragment() {
 
 
-    private val vm: DetailsViewModel by viewModel()
+    private val vm: DetailsViewModel by viewModels {
+        viewModelFactory
+    }
     private var binding: FragmentDetailsBinding? = null
     private var userLogin: String? = null
+
+
+    @Inject
+    lateinit var viewModelFactory: DetailsViewModelFactory
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

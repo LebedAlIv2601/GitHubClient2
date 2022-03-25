@@ -1,24 +1,23 @@
 package com.example.githubclient2.app
 
 import android.app.Application
+import android.content.Context
 import com.example.githubclient2.BuildConfig
-import com.example.githubclient2.di.appModule
-import com.example.githubclient2.di.dataModule
-import com.example.githubclient2.di.domainModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.logger.Level
+import com.example.githubclient2.di.*
 
 class App : Application() {
 
+    lateinit var appComponent: AppComponent
+
     override fun onCreate() {
         super.onCreate()
-
-        startKoin {
-            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
-            androidContext(this@App)
-            modules(listOf(appModule, domainModule, dataModule))
-        }
+        appComponent = DaggerAppComponent.create()
     }
+
 }
+
+val Context.appComponent: AppComponent
+    get() = when(this){
+        is App -> appComponent
+        else -> applicationContext.appComponent
+    }

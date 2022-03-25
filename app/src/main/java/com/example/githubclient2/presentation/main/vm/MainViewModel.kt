@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.example.githubclient2.domain.model.DomainUserModel
 import com.example.githubclient2.domain.usecase.GetUserListUseCase
 
-class MainViewModel(private val getUserListUseCase: GetUserListUseCase) : ViewModel() {
+class MainViewModel (private val getUserListUseCase: GetUserListUseCase) : ViewModel() {
     val userListData: LiveData<PagingData<DomainUserModel>> get() = getUserListUseCase().cachedIn(viewModelScope)
+
 }

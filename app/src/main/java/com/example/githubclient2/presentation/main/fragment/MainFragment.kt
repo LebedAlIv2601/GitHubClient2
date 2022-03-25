@@ -1,7 +1,9 @@
 package com.example.githubclient2.presentation.main.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,23 +16,35 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubclient2.R
+import com.example.githubclient2.app.appComponent
 import com.example.githubclient2.databinding.FragmentMainBinding
 import com.example.githubclient2.domain.model.DomainUserModel
 import com.example.githubclient2.presentation.details.fragment.DetailsFragment
 import com.example.githubclient2.presentation.main.recyclerview.LoaderStateAdapter
 import com.example.githubclient2.presentation.main.recyclerview.PagingUserAdapter
 import com.example.githubclient2.presentation.main.vm.MainViewModel
+import com.example.githubclient2.presentation.main.vm.MainViewModelFactory
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
 
 class MainFragment : Fragment() {
 
-    private val vm: MainViewModel by viewModel()
+    private val vm: MainViewModel by viewModels{
+       viewModelFactory
+    }
 
     private var binding: FragmentMainBinding? = null
 
     private var pagingAdapter: PagingUserAdapter? = null
+
+    @Inject
+    lateinit var viewModelFactory: MainViewModelFactory
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
