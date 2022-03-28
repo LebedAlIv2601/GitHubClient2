@@ -13,7 +13,7 @@ interface RetrofitServices {
     @GET("users")
     suspend fun getUserList(@Query ("since") id: Int,
                             @Query ("per_page") perPage: Int):
-            MutableList<DataUserModel>
+            List<DataUserModel>
 
     @Headers("Authorization: token ${Token.TOKEN}")
     @GET("users/{username}")
