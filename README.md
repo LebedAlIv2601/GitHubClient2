@@ -1,1 +1,1 @@
-Стэк технологий: Clean Architecture, MVVM, Retrofit, Paging 3, Koin
+Стэк технологий: Clean Architecture, MVVM, Retrofit, Paging 3, Dagger 2
